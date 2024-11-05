@@ -36,6 +36,15 @@ stop_text = """|  \
 
 def play():
     return MessageBeep()
+
+def circle(sts,time):
+    global status
+    global clock
+    global pomidoro
+    run_clock()
+    status = sts
+    label_status.config(text=status)
+    clock = time * 60
 def time():
     global clock
     global clock_run
@@ -49,28 +58,19 @@ def time():
     clock -= 1
     if clock < 30:
         play()
-    if clock == -1:
-        run_clock()
-        if status == "work":
-            if pomidoro == 3:
-                status = "happy"
-                label_status.config(text=status)
-                clock = 30*60
-                return 0
-            status = "relax"
-            label_status.config(text=status)
-            clock = 5*60
-        elif status == "happy":
-            status = "end"
-            label_status.config(text=status)
-            pomidoro += 1
-            label_main.config(text=str("Pomidoro " + str(pomidoro)))    
-            label_status.config(text=status)
-        elif status == "relax":
-            status = "work"
-            clock = 25*60
-            pomidoro += 1
-            label_main.config(text=str("Pomidoro " + str(pomidoro)))
+    if status == "work" and clock == -1:
+        if pomidoro == 3:
+            circle("happy",30)
+            return 0
+        circle("relax",5)
+    elif status == "happy" and clock == -1:
+        circle("end",0)
+        pomidoro += 1
+        label_main.config(text=str("Pomidoro " + str(pomidoro)))    
+    elif status == "relax" and clock == -1:
+        circle("work",25)
+        pomidoro += 1
+        label_main.config(text=str("Pomidoro " + str(pomidoro)))
                 
     root.after(1000,time)
 
